@@ -1,0 +1,26 @@
+Full legal text to be appended; this notice states the license meanwhile.
+
+SPDX-License-Identifier: CC-BY-4.0
+
+The specification text in this repository (spec/ and the descriptive
+documents: README.md, conformance/, implementations/, CHANGELOG.md) is
+licensed under the Creative Commons Attribution 4.0 International License
+(CC-BY-4.0).
+
+You are free to share and adapt the material for any purpose, even
+commercially, under the following terms: attribution — you must give
+appropriate credit, provide a link to the license, and indicate if changes
+were made; no additional restrictions — you may not apply legal terms or
+technological measures that legally restrict others from doing anything the
+license permits.
+
+Official full legal text:
+https://creativecommons.org/licenses/by/4.0/legalcode
+
+The full legal text of CC-BY-4.0 will be appended to this file verbatim in
+a later batch; until then, this notice states the license and the link
+above is authoritative. (CC-BY-4.0 is a standardized license; appending the
+text does not change its terms.)
+
+Code in this repository (the conformance runner and any scripts) is
+licensed separately under the Apache License 2.0 — see LICENSE-CODE.
