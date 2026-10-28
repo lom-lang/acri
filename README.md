@@ -51,9 +51,12 @@ vendor.
 spec/                         # The specification itself
   acri-v0.1.md                # v0.1 — numbered cut, immutable (byte-identical to the main repo's cut)
   acri-v0.2-draft.md          # v0.2 errata draft (undecided; three [v0.2-draft]-tagged revisions)
-conformance/                  # Conformance suite (skeleton; runner in a later batch)
+conformance/                  # Conformance suite (runner delivered 2026-10-28)
   README.md                   # Scope, three-state reporting, probing method, batch plan
-  suite-design.md             # Probe inventory draft (C-01…C-14)
+  suite-design.md             # Probe inventory (C-01…C-14)
+  suite/                      # Executable runner (Python, standard library only)
+  adapters/                   # Adapter manifests (lom.json = first/reference)
+  probes/                     # Implementation-owned probe files (probes/lom/ = first set)
 implementations/              # Implementation registrations
   lom.md                      # Lom (reference implementation) — L0/L1/L2 conformant since v1.15.0
 CHANGELOG.md                  # Version carriers (one entry per cut)
@@ -66,9 +69,10 @@ LICENSE-CODE                  # Apache-2.0 (code)
 1. **Read the specification** — `spec/acri-v0.1.md` is the operative
    version. Map your toolchain's diagnostics, suggestions, CLI, and exit
    codes onto L0/L1; document any enum-name or field-shape mappings.
-2. **Run the conformance suite** *(pending — the executable runner arrives
-   in Batch 2+; see `conformance/README.md`)*. Meanwhile, self-assess
-   against the probe inventory in `conformance/suite-design.md`.
+2. **Run the conformance suite** — write an adapter manifest for your CLI
+   (see `conformance/adapters/lom.json` for the shape) plus your own probe
+   files, then run `python conformance/suite/runner.py <manifest.json>`
+   (delivered 2026-10-28; see `conformance/README.md`).
 3. **Register**: open a PR adding `implementations/<your-tool>.md`
    (use `implementations/lom.md` as the template) stating your conformance
    levels, registered deviations, and evidence pointers.

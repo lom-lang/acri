@@ -1,0 +1,6 @@
+[package]
+name = "acri-probe-pkg-mixed"
+version = "0.1.0"
+
+[dependencies]
+absent = { path = "absent" }

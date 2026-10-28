@@ -1,11 +1,15 @@
-# ACRI Conformance Suite (planned)
+# ACRI Conformance Suite
 
 This directory holds the ACRI conformance suite — machine-checkable probes
 that measure any ACRI L1 toolchain against the specification in `spec/`.
-**Status: skeleton.** This README fixes the scope, the reporting vocabulary,
-and the probing method; the probe inventory is drafted in
-[suite-design.md](suite-design.md); the executable runner arrives in a later
-batch (see "Engineering batches" below).
+**Status: runner delivered.** The executable suite lives in
+[suite/](suite/) (Python, standard library only); the probe inventory is
+[suite-design.md](suite-design.md); implementations bind through adapter
+manifests in [adapters/](adapters/) and supply their own probe files under
+[probes/](probes/). The first run against the reference implementation
+(Lom v1.16.0) reports 7 `conformant`, 5 `by-mapping`, 0 `non-conformant`
+(C-03 `skipped` — single release; C-12 `manual-pending` — manual tier),
+consistent with the registration in `implementations/lom.md`.
 
 ## Scope — the machine-checkable subset of L1
 
@@ -70,19 +74,58 @@ The suite binds to no language, runtime, or vendor (specification §0):
   files; the runner verifies the probes actually trigger the expected
   conditions (e.g. the error file does produce an error-severity diagnostic).
 
+## Usage
+
+Run the suite against a registered implementation (Python 3.8+, standard
+library only; no installation):
+
+```
+python conformance/suite/runner.py conformance/adapters/lom.json
+```
+
+- One line per probe (`C-xx = state`), then the aggregate three-state
+  summary. Exit code: `0` no `non-conformant`; `1` at least one
+  `non-conformant`; `2` setup/probe self-verification failure (no verdicts
+  emitted).
+- A Markdown artifact with per-probe evidence is written to
+  `conformance/.tmp/report-<timestamp>.md` (gitignored). Run artifacts and
+  mutated probe copies live in a per-run workspace under `conformance/.tmp/`
+  and are removed afterwards — committed probe files are never mutated.
+- Cross-release code-stability (C-03): pass a second, older adapter
+  manifest: `--baseline conformance/adapters/lom-vX.json`. Without it C-03
+  reports `skipped`.
+- C-12 (§3 L2 methodology) is the manual tier: the runner emits
+  `manual-pending` and never a machine pass/fail.
+- Registering another toolchain: add `conformance/adapters/<tool>.json`
+  (command templates + envelope field addressing + registered mappings +
+  probe list; see the schema keys used in `adapters/lom.json`), supply
+  `conformance/probes/<tool>/…` files that trigger the required conditions
+  (the runner self-verifies them before probing), and register the results
+  in `implementations/<tool>.md`.
+
 ## Engineering batches
 
-The suite is built in batches; this repository first stands up the skeleton:
+The suite is built in batches:
 
-- **Batch 1 (this repository, current)** — skeleton: scope (this README),
-  probe inventory draft ([suite-design.md](suite-design.md)), and the first
-  implementation registration (`implementations/lom.md`). No executable
-  runner yet.
-- **Batch 2 (later)** — runner core: adapter manifest schema + the first
-  machine probes (envelope completeness, exit-code matrix, plan
-  side-effect-freedom).
-- **Batch 3 (later)** — behavioral probes: AXIOM 1 apply test, `codes`
-  closed loop, `l2-fix/v2` position field (against Lom as reference).
-- **Batch 4 (later)** — reporter: three-state summary output (CLI + Markdown
-  artifact) and a full first run against the reference implementation,
-  published with the registration entry.
+- **Batch 1 (done)** — skeleton: scope (this README), probe inventory draft
+  ([suite-design.md](suite-design.md)), and the first implementation
+  registration (`implementations/lom.md`).
+- **Batch 2 (done)** — runner core: adapter manifest schema
+  (`adapters/lom.json` — command templates, envelope field addressing,
+  registered mappings) + machine probes C-01/C-02/C-06/C-07/C-09 (envelope
+  completeness, position object, plan side-effect-freedom, REQUIRED command
+  set, exit-code matrix).
+- **Batch 3 (done)** — behavioral probes: C-05 AXIOM 1 apply test (run,
+  apply, re-check, diff on a probe spanning the confidence/action grid),
+  C-08 `codes` closed loop, C-13 `l2-fix/v2` position field, C-14
+  registered-deviations re-check (Lom `pkg-expand` rc 1, LSP band rc 1).
+- **Batch 4 (done)** — reporter: three-state per-probe lines + aggregate
+  summary + Markdown artifact (`conformance/.tmp/`, gitignored), and the
+  full first run against the reference implementation (Lom v1.16.0),
+  recorded above.
+
+Layout: `suite/runner.py` (entry) · `suite/adapter.py` (manifest loader +
+process-boundary driver) · `suite/probes.py` (C-01…C-14) ·
+`suite/report.py` (three-state model + rendering) · `adapters/`
+(implementation manifests) · `probes/<impl>/` (implementation-owned probe
+files).

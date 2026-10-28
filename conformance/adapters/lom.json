@@ -1,0 +1,128 @@
+{
+  "schema": "acri-adapter/1",
+  "implementation": "lom",
+  "registration": "implementations/lom.md",
+  "binary": "D:/lom-lang/lom/target/release/lom.exe",
+  "version_command": ["{bin}", "--version"],
+  "notes": [
+    "Adapter manifest for the Lom reference implementation (ACRI v0.1 L1 surface).",
+    "All relative paths resolve against the conformance/ directory of this repository.",
+    "Command templates are argument arrays: {bin} = binary, {file} = probe file path, {code} = diagnostic code.",
+    "The suite drives the toolchain only through these templates at the process boundary (specification section 0 neutrality)."
+  ],
+  "commands": {
+    "check_json": ["{bin}", "{file}", "--json"],
+    "fix_plan": ["{bin}", "fix", "{file}", "--plan", "--json"],
+    "fix_apply": ["{bin}", "fix", "{file}", "--apply", "--json"],
+    "codes_json": ["{bin}", "codes", "--json"],
+    "explain_json": ["{bin}", "explain", "{code}", "--json"]
+  },
+  "envelope": {
+    "check": {
+      "schema": "schema",
+      "file": "file",
+      "ok": "ok",
+      "summary": "summary",
+      "diagnostics": "diagnostics"
+    },
+    "summary": { "total": "total", "errors": "errors", "warnings": "warnings" },
+    "diagnostic": {
+      "code": "code",
+      "severity": "severity",
+      "message": "message",
+      "file": "file",
+      "position": "position",
+      "stage": "stage",
+      "hint": "hint"
+    },
+    "position": { "line": "line", "col": "col", "anchor": "anchor" },
+    "codes": {
+      "list": "codes",
+      "code": "code",
+      "severity": "severity",
+      "summary": "summary",
+      "category": "category"
+    },
+    "plan": {
+      "list": "plans",
+      "diagnostic": "diagnostic",
+      "suggestions": "fixes",
+      "code": "code",
+      "action": "action",
+      "confidence": "confidence",
+      "line": "line"
+    },
+    "apply": {
+      "applied": "applied",
+      "changes": "changes",
+      "change_code": "code",
+      "change_action": "action",
+      "change_line": "line"
+    },
+    "explain": {
+      "code": "code",
+      "doc": "doc"
+    }
+  },
+  "mappings": {
+    "enum_normalization": {
+      "fields": ["confidence", "action"],
+      "rule": "lowercase",
+      "registered": "implementations/lom.md: section 1.2 suggestion enums match after documented case normalization (e.g. High -> high)"
+    },
+    "position_zero_sentinel": {
+      "rule": "when anchor = none, line/col 0 are accepted as the honest no-position sentinel",
+      "registered": "implementations/lom.md: anchor \"none\" with an honest 0:0 for the positionless input-unreadable channel (LEX000) — the shape the v0.2-draft erratum legitimizes"
+    }
+  },
+  "probes": {
+    "clean": "probes/lom/clean.lom",
+    "error": "probes/lom/error.lom",
+    "warnings_only": "probes/lom/warnings-only.lom",
+    "mixed": "probes/lom/mixed-suggestions.lom",
+    "hint_only": "probes/lom/hint-only.lom",
+    "unreadable_input": {
+      "sentinel": "probes/lom/__nonexistent__.lom",
+      "note": "by definition absent — the input-unreadable channel (rc >= 2)"
+    }
+  },
+  "optional": {
+    "explain": {
+      "registered": true,
+      "known_code": "NAM005",
+      "unknown_code": "ZZZ999"
+    }
+  },
+  "extensions": {
+    "l2_fix": {
+      "command": ["{bin}", "l2fix", "{file}", "--json"],
+      "envelope": {
+        "list": "entries",
+        "code": "code",
+        "confidence": "confidence",
+        "action": "action",
+        "position": "position"
+      },
+      "probe": "probes/lom/l2-fail.txt",
+      "registered": "implementations/lom.md: l2-fix/v2 position field (v1.10.0) — Lom extension surface, C-13"
+    }
+  },
+  "deviations": [
+    {
+      "id": "pkg-expand-mixed-rc1",
+      "registered": "implementations/lom.md: pkg-expand mixed failure path exits 1 (not >=2); the path carries PKG diagnostic codes",
+      "command": ["{bin}", "pkg-expand", "{file}"],
+      "probe": "probes/lom/pkg-mixed/main.lom",
+      "fixture": "probes/lom/pkg-mixed",
+      "expect_rc": 1,
+      "expect_output_regex": "PKG[0-9]{3}"
+    },
+    {
+      "id": "lsp-band-rc1",
+      "registered": "implementations/lom.md: the LSP protocol band exits 1 — r58-locked protocol behavior, not part of the ACRI CLI surface",
+      "command": ["{bin}", "lsp"],
+      "stdin_mode": "lsp_exit_notification",
+      "expect_rc": 1
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+codegen error: 3:13 [L2U001] 未定义变量 'y'
+codegen error: [L2P001] 程序缺少 main 函数
+COMPILE-ERROR

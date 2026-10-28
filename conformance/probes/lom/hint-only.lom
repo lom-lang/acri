@@ -1,0 +1,12 @@
+# ACRI conformance probe — hint-only: its only suggestion is low-confidence
+# hint-action (NAM002 duplicate fn). fix --apply must leave the file
+# byte-identical (the fixed == bad guard of C-05).
+fn helper(a: Int)
+    a
+end
+fn helper(a: Int)
+    a
+end
+fn main()
+    helper(1)
+end

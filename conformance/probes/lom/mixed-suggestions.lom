@@ -1,0 +1,23 @@
+# ACRI conformance probe — mixed suggestions: spans the confidence/action grid
+# with distinct targets so AXIOM 1 (C-05) can be decided behaviorally.
+#   NAM002 duplicate fn        -> fix: action=hint     confidence=low    (never applied)
+#   NAM005 builtin unimported  -> fix: action=insert   confidence=high  (applied)
+#   MUT001 immutable reassign  -> fix: action=replace  confidence=high  (applied)
+#   NAM003 undefined 'z'       -> fix: action=replace  confidence=medium (never applied)
+# The duplicate-helper block (hint target) and the println(z) line (medium
+# target) are spatially disjoint from both high-confidence targets.
+fn helper(a: Int)
+    a
+end
+fn helper(a: Int)
+    a
+end
+fn main()
+    let s = "hello"
+    let t = starts_with(s, "he")
+    let u = 1
+    u = 2
+    println(z)
+    println(t)
+    println(u)
+end

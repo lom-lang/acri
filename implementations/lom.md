@@ -58,9 +58,13 @@ statements:
 
 ## Suite status
 
-The conformance suite runner is not yet built (see
-[conformance/README.md](../conformance/README.md), Batch 2+). This
-registration cites the main repository's clause-by-clause mapping and its
-machine-locked evidence (code-table count locks, exit-code tests
-`tests/beta2_exit_codes.rs`, eval prompt gate) until the suite can re-probe
-Lom mechanically.
+The executable conformance suite is delivered (Conformance Batch 2+3+4,
+2026-10-28; see [conformance/README.md](../conformance/README.md) for how to
+run it). First machine run against Lom v1.16.0 (2026-10-28): **7
+`conformant`, 5 `by-mapping`, 0 `non-conformant`**, C-03 `skipped`
+(single-release run), C-12 `manual-pending` (manual tier) — consistent with
+this registration's mappings and both registered deviations, which the suite
+re-verified live (C-14). Note on C-04: the §1.2 enum-name case-normalization
+mapping is a passthrough on v1.16.0 (emitted enums are already lowercase);
+the mapping stays registered for older builds, so the probe reports
+`by-mapping` while the mapping is on file.

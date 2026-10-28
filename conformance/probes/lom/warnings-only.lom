@@ -1,0 +1,11 @@
+# ACRI conformance probe — warnings-only: warning-severity diagnostics only, no
+# errors (rc 0, ok=true). Triggers NAM005 (builtin not imported) and MUT001
+# (reassignment of an immutable let binding).
+fn main()
+    let s = "hello"
+    let t = starts_with(s, "he")
+    let u = 1
+    u = 2
+    println(t)
+    println(u)
+end

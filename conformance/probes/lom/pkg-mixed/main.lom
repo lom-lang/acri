@@ -1,0 +1,7 @@
+# ACRI conformance probe — pkg-expand mixed failure: the declared dependency
+# path does not exist, so pkg-expand fails on the package-resolution path and
+# carries a PKG diagnostic code (PKG002) with exit code 1 — the registered
+# deviation (not >= 2) re-checked by C-14.
+fn main()
+    println(1)
+end
