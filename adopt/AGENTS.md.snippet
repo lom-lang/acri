@@ -1,0 +1,43 @@
+<!-- ACRI repair-interface snippet for AGENTS.md — paste the block between
+     BEGIN and END into this repository's AGENTS.md, then replace every
+     <PLACEHOLDER> with this toolchain's real commands. See the sibling
+     README (adopt/README.md in the acri repository).
+     Source: https://github.com/lom-lang/acri (ACRI specification house). -->
+
+<!-- BEGIN ACRI snippet -->
+## Toolchain repair interface (ACRI)
+
+This repository's toolchain follows the **ACRI** (Agent-Compiler Repair
+Interface) contract for diagnostics and repairs. Consume it exactly as
+follows — do not parse human-formatted output.
+
+| Purpose | Command | Notes |
+|---|---|---|
+| Diagnose (read-only) | `<CHECK_CMD>` | Emits a JSON envelope: `schema`, `file`, `ok`, `summary {total, errors, warnings}`, `diagnostics[]`. Read codes and severity from the objects, not from message wording. |
+| Bootstrap code table | `<CODES_CMD>` | Every diagnostic code with severity, one-line meaning, and category. Consult this before acting on any code you have not seen. |
+| Plan repairs (read-only) | `<FIX_PLAN_CMD>` | Emits repair suggestions. **No side effects** — never treats this as having applied anything. |
+| Apply repairs | `<FIX_APPLY_CMD>` | Applies only suggestions the tool deems auto-applicable; everything else is left for you to reason about. |
+| Explain one code (optional) | `<EXPLAIN_CMD>` | Long-form documentation for a single code, when available. |
+
+**Exit codes** (same for every command): `0` = clean or warnings only ·
+`1` = one or more error-severity diagnostics (the JSON envelope is still
+authoritative — exit 1 is not a tool failure) · `≥ 2` = the tool itself
+failed (bad input, internal error); its output is not a diagnostic set.
+
+**Safety rules — never violate these:**
+
+1. **Auto-apply gate**: only suggestions with `confidence: "high"` AND
+   `action` ≠ `hint` may be applied without asking; everything else
+   (`medium`, `low`, or any `hint`) requires an explicit human decision.
+2. **Cognitive warnings are never rewritten**: a diagnostic whose fix would
+   merely remove ambiguity (behavior already determined) arrives as
+   `action: "hint"` — surface it, do not edit code for it.
+3. **Plan and apply are separate gates**: planning never mutates anything;
+   applying is always an explicit, separate invocation.
+
+**Consumption discipline**: after any edit you make, re-run `<CHECK_CMD>`
+and trust its envelope over your own expectation of what the edit fixed.
+
+*This toolchain declares conformance to ACRI vX.Y (level: …), registered at
+<REGISTRY_URL_OR_PATH>.*
+<!-- END ACRI snippet -->

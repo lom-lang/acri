@@ -5,6 +5,40 @@ carrier #1 is the git tag — see the repository README, "Versioning").
 Repository milestones outside the specification itself (e.g. conformance
 engineering batches) are also anchored here, clearly labeled as such.
 
+## Ecosystem mappings & adoption aids — 2026-10-29 (delivered; not a spec cut)
+
+Two adapter-facing deliverables plus README pointers; pure additions — no
+specification text changed (`spec/` untouched, v0.1 immutability preserved).
+
+1. **SARIF mapping appendix** (`mappings/sarif.md`, informative) — the
+   adapter-author guide from SARIF v2.1.0 to ACRI L0/L1: field-by-field
+   `result` → `Diagnostic` correspondence (including the `level`
+   defaulting chain — kind defaults to `fail`, an unresolved level lands on
+   `warning`, `none` means non-`fail` kinds — and the adapter-owned
+   `ruleId` → `<NS><NNN>` normalization responsibility), the exit-code
+   strategy for the adapter's own CLI, and `fixes` → `RepairSuggestion`
+   with a normative-for-adapters confidence policy: SARIF-derived fixes
+   MUST NOT map to `high` by default (AXIOM 1 alignment; upgrades only via
+   a registered, human-verified policy). Every SARIF field name and quoted
+   sentence was verified against the SARIF v2.1.0 OASIS Standard HTML on
+   2026-10-29; the GCC 13+ (`-fdiagnostics-format=sarif-file`, manual
+   confirmed "emit diagnostics in SARIF Version 2.1.0 format") and Clang
+   (`-fdiagnostics-format=sarif`) onboarding one-liners were verified
+   against their current official manuals.
+2. **AGENTS.md snippet template** (`adopt/AGENTS.md.snippet` +
+   `adopt/README.md`) — a paste-ready Markdown block, placeholder-driven
+   (`<CHECK_CMD>`/`<FIX_PLAN_CMD>`/`<FIX_APPLY_CMD>`/`<CODES_CMD>` +
+   optional `<EXPLAIN_CMD>`), that tells agents in an adopting repository
+   how to consume its ACRI surface: the JSON envelope, the exit-code
+   semantics (1 = diagnostics, 0 = clean/warnings, ≥ 2 = tool failure),
+   the three safety axioms in one line each, and the consumption
+   discipline — plus a one-line conformance-declaration template.
+   Distribution rationale: AGENTS.md is already carried by 60k+
+   repositories; it is the lowest-cost channel for ACRI conventions.
+3. **README** — Repository layout gains `mappings/` and `adopt/`; "How to
+   conform" step 1 now points SARIF emitters and AGENTS.md adopters at the
+   two new documents.
+
 ## Conformance Batch 2+3+4 — 2026-10-28 (delivered; not a spec cut)
 
 The executable conformance suite (engineering batches 2-4 of

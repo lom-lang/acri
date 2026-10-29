@@ -59,6 +59,11 @@ conformance/                  # Conformance suite (runner delivered 2026-10-28)
   probes/                     # Implementation-owned probe files (probes/lom/ = first set)
 implementations/              # Implementation registrations
   lom.md                      # Lom (reference implementation) — L0/L1/L2 conformant since v1.15.0
+mappings/                     # Adapter-source mappings (informative; never modify spec/)
+  sarif.md                    # SARIF v2.1.0 → ACRI L0/L1 — adapter-author guide, field-checked against the OASIS spec
+adopt/                        # Adoption aids for toolchain repos
+  AGENTS.md.snippet           # Paste-ready AGENTS.md block (commands, exit codes, safety rules)
+  README.md                   # What to paste where
 CHANGELOG.md                  # Version carriers (one entry per cut)
 LICENSE-SPEC                  # CC-BY-4.0 (spec text)
 LICENSE-CODE                  # Apache-2.0 (code)
@@ -68,7 +73,11 @@ LICENSE-CODE                  # Apache-2.0 (code)
 
 1. **Read the specification** — `spec/acri-v0.1.md` is the operative
    version. Map your toolchain's diagnostics, suggestions, CLI, and exit
-   codes onto L0/L1; document any enum-name or field-shape mappings.
+   codes onto L0/L1; document any enum-name or field-shape mappings. If
+   your tool already emits SARIF v2.1.0 (GCC 13+, Clang, most static
+   analyzers), start from the verified mapping in `mappings/sarif.md`; to
+   teach agents in your repo how to consume your interface, paste
+   `adopt/AGENTS.md.snippet` into your `AGENTS.md`.
 2. **Run the conformance suite** — write an adapter manifest for your CLI
    (see `conformance/adapters/lom.json` for the shape) plus your own probe
    files, then run `python conformance/suite/runner.py <manifest.json>`
